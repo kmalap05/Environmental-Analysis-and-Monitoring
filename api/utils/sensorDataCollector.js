@@ -1,7 +1,7 @@
 const SensorData = require("../models/sensorDataModel");
 const axios = require("axios");
 
-const channelID = 2279831;
+const channelID = 2418900;
 const fieldIDs = [1, 2, 3, 4, 5];
 const interval = 15000;
 
@@ -26,11 +26,11 @@ async function collectAndSaveData() {
         `https://api.thingspeak.com/channels/${channelID}/fields/${fieldIDs[2]}/last.json`
       ),
       // axios.get(
-      //   `https://api.thingspeak.com/channels/${channelID}/fields/${fieldIDs[0]}/last.json`
+      //   `https://api.thingspeak.com/channels/${channelID}/fields/${fieldIDs[3]}/last.json`
       // ),
-      // axios.get(
-      //   `https://api.thingspeak.com/channels/${channelID}/fields/${fieldIDs[0]}/last.json`
-      // ),
+      axios.get(
+        `https://api.thingspeak.com/channels/${channelID}/fields/${fieldIDs[4]}/last.json`
+      ),
     ]);
 
     const entry_id = await getLatestEntryId();
@@ -40,7 +40,7 @@ async function collectAndSaveData() {
       tds_value: parseFloat(responses[1].data.field2),
       turbidity_value: parseFloat(responses[2].data.field3),
       // pm25_value: parseFloat(responses[3].data.field4),
-      // mq135_value: parseFloat(responses[4].data.field5),
+      mq135_value: parseFloat(responses[4].data.field5),
     };
 
     await SensorData.create(data);

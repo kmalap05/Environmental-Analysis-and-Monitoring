@@ -5,7 +5,7 @@ const channelID = 2418900;
 const fieldIDs = [1, 2, 3, 4, 5];
 const interval = 15000;
 
-async function getLatestEntryId() {
+async function getLatestEntryCheckId() {
   const latestEntry = await SensorData.findOne(
     {},
     {},
@@ -33,17 +33,20 @@ async function collectAndSaveData() {
       ),
     ]);
 
-    const entry_id = await getLatestEntryId();
-    const data = {
-      entry_id,
-      pH_value: parseFloat(responses[0].data.field1),
-      tds_value: parseFloat(responses[1].data.field2),
-      turbidity_value: parseFloat(responses[2].data.field3),
-      // pm25_value: parseFloat(responses[3].data.field4),
-      mq135_value: parseFloat(responses[4].data.field5),
-    };
+    const entry_check_id = await getLatestEntryCheckId();
 
-    await SensorData.create(data);
+    if (responses[0].data.entry_id !== entry_check_id) {
+      const data = {
+        entry_id: entry_check_id,
+        pH_value: parseFloat(responses[0].data.field1),
+        tds_value: parseFloat(responses[1].data.field2),
+        turbidity_value: parseFloat(responses[2].data.field3),
+        // pm25_value: parseFloat(responses[3].data.field4),
+        mq135_value: parseFloat(responses[4].data.field5),
+      };
+
+      await SensorData.create(data);
+    }
   } catch (error) {
     console.error(error);
   }

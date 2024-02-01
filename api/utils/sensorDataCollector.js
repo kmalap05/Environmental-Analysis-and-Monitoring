@@ -4,6 +4,7 @@ const axios = require("axios");
 const channelID = 2279831;
 const fieldIDs = [1, 2, 3, 4, 5];
 const interval = 15000;
+let previousEntryId = null;
 
 async function getLatestEntryCheckId() {
   const latestEntry = await SensorData.findOne(

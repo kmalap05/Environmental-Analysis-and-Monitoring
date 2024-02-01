@@ -4,6 +4,7 @@ const axios = require("axios");
 const channelID = 2279831;
 const fieldIDs = [1, 2, 3, 4, 5];
 const interval = 15000;
+
 let previousEntryId = null;
 
 async function getLatestEntryCheckId() {
@@ -26,15 +27,17 @@ async function collectAndSaveData() {
       axios.get(
         `https://api.thingspeak.com/channels/${channelID}/fields/${fieldIDs[2]}/last.json`
       ),
-      // axios.get(
-      //   `https://api.thingspeak.com/channels/${channelID}/fields/${fieldIDs[3]}/last.json`
-      // ),
+      axios.get(
+        `https://api.thingspeak.com/channels/${channelID}/fields/${fieldIDs[0]}/last.json`
+      ),
       axios.get(
         `https://api.thingspeak.com/channels/${channelID}/fields/${fieldIDs[4]}/last.json`
       ),
     ]);
 
     const entry_check_id = await getLatestEntryCheckId();
+
+    // Check if the entry_id in the API response is the same as the previous entry_id
     if (
       previousEntryId !== null &&
       responses[0].data.entry_id === previousEntryId
@@ -48,7 +51,7 @@ async function collectAndSaveData() {
         pH_value: parseFloat(responses[0].data.field1),
         tds_value: parseFloat(responses[1].data.field2),
         turbidity_value: parseFloat(responses[2].data.field3),
-        // pm25_value: parseFloat(responses[3].data.field4),
+        pm25_value: parseFloat(responses[3].data.field4),
         mq135_value: parseFloat(responses[4].data.field5),
       };
 

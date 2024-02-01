@@ -25,9 +25,9 @@ async function collectAndSaveData() {
       axios.get(
         `https://api.thingspeak.com/channels/${channelID}/fields/${fieldIDs[2]}/last.json`
       ),
-      axios.get(
-        `https://api.thingspeak.com/channels/${channelID}/fields/${fieldIDs[3]}/last.json`
-      ),
+      // axios.get(
+      //   `https://api.thingspeak.com/channels/${channelID}/fields/${fieldIDs[3]}/last.json`
+      // ),
       axios.get(
         `https://api.thingspeak.com/channels/${channelID}/fields/${fieldIDs[4]}/last.json`
       ),
@@ -39,8 +39,8 @@ async function collectAndSaveData() {
       pH_value: parseFloat(responses[0].data.field1),
       tds_value: parseFloat(responses[1].data.field2),
       turbidity_value: parseFloat(responses[2].data.field3),
-      pm25_value: parseFloat(responses[3].data.field4),
-      mq135_value: parseFloat(responses[4].data.field5),
+      // pm25_value: parseFloat(responses[3].data.field4),
+      mq135_value: parseFloat(responses[3].data.field5),
     };
 
     await SensorData.create(data);

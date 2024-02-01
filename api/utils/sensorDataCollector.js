@@ -17,19 +17,19 @@ async function collectAndSaveData() {
   try {
     const responses = await Promise.all([
       axios.get(
-        `https://api.thingspeak.com/channels/${channelID}/fields/${fieldIDs[0]}/last.json`
+        `https://api.thingspeak.com/channels/${channelID}/fields/1/last.json`
       ),
       axios.get(
-        `https://api.thingspeak.com/channels/${channelID}/fields/${fieldIDs[1]}/last.json`
+        `https://api.thingspeak.com/channels/${channelID}/fields/2/last.json`
       ),
       axios.get(
-        `https://api.thingspeak.com/channels/${channelID}/fields/${fieldIDs[2]}/last.json`
+        `https://api.thingspeak.com/channels/${channelID}/fields/3/last.json`
       ),
       // axios.get(
       //   `https://api.thingspeak.com/channels/${channelID}/fields/${fieldIDs[3]}/last.json`
       // ),
       axios.get(
-        `https://api.thingspeak.com/channels/${channelID}/fields/${fieldIDs[4]}/last.json`
+        `https://api.thingspeak.com/channels/${channelID}/fields/5/last.json`
       ),
     ]);
 

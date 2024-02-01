@@ -18,14 +18,14 @@ const sensorDataModel = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    // pm25_value: {
-    //   type: Number,
-    //   required: true,
-    // },
-    // mq135_value: {
-    //   type: Number,
-    //   required: true,
-    // },
+    pm25_value: {
+      type: Number,
+      required: true,
+    },
+    mq135_value: {
+      type: Number,
+      required: true,
+    },
   },
   {
     timestamps: true,

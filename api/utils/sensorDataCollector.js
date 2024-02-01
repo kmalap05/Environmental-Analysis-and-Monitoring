@@ -1,7 +1,7 @@
 const SensorData = require("../models/sensorDataModel");
 const axios = require("axios");
 
-const channelID = 2418900;
+const channelID = 2279831;
 const fieldIDs = [1, 2, 3, 4, 5];
 const interval = 15000;
 
@@ -34,7 +34,6 @@ async function collectAndSaveData() {
     ]);
 
     const entry_check_id = await getLatestEntryCheckId();
-
     if (responses[0].data.entry_id !== entry_check_id) {
       const data = {
         entry_id: entry_check_id,

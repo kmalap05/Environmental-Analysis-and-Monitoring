@@ -34,7 +34,14 @@ async function collectAndSaveData() {
     ]);
 
     const entry_check_id = await getLatestEntryCheckId();
-    if (responses[0].data.entry_id !== entry_check_id) {
+    if (
+      previousEntryId !== null &&
+      responses[0].data.entry_id === previousEntryId
+    ) {
+      console.log(
+        `Duplicate entry_id (${entry_check_id}). Skipping data insertion.`
+      );
+    } else {
       const data = {
         entry_id: entry_check_id,
         pH_value: parseFloat(responses[0].data.field1),
@@ -45,6 +52,7 @@ async function collectAndSaveData() {
       };
 
       await SensorData.create(data);
+      previousEntryId = responses[0].data.entry_id; // Update previousEntryId with the current entry_id
     }
   } catch (error) {
     console.error(error);

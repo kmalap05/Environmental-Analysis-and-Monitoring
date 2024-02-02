@@ -33,6 +33,11 @@ async function collectAndSaveData() {
       ),
     ]);
 
+    console.log(responses[0].data);
+    console.log(responses[1].data);
+    console.log(responses[2].data);
+    console.log(responses[3].data);
+
     const entry_id = await getLatestEntryId();
     const data = {
       entry_id,

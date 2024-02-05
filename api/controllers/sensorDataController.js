@@ -31,6 +31,7 @@ const getLastEntryOfValueHandler = (valueField) => async (req, res) => {
 const storeSensorDataHandler = async (req, res) => {
   const dataFromNodeMCU = req.body;
   logger.info("Data received from NodeMCU:", dataFromNodeMCU);
+  res.json({ message: "Data received successfully!" });
 };
 
 const getAllEntries = errorMiddleware(getAllEntriesHandler);

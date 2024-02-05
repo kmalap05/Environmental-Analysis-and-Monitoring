@@ -24,6 +24,7 @@ const getLastEntryOfValueHandler = (valueField) => async (req, res) => {
 
 const storeSensorDataHandler = async (req, res) => {
   const dataFromNodeMCU = req.body;
+  console.log(dataFromNodeMCU);
   res.json(dataFromNodeMCU);
 };
 

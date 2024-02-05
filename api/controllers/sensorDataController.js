@@ -1,11 +1,5 @@
 const SensorData = require("../models/sensorDataModel");
 const errorMiddleware = require("../middlwares/errorMiddleware");
-const winston = require("winston");
-
-// Configure Winston logger
-const logger = winston.createLogger({
-  transports: [new winston.transports.Console()],
-});
 
 const getAllEntriesHandler = async (req, res) => {
   const entries = await SensorData.find();
@@ -30,8 +24,7 @@ const getLastEntryOfValueHandler = (valueField) => async (req, res) => {
 
 const storeSensorDataHandler = async (req, res) => {
   const dataFromNodeMCU = req.body;
-  logger.info("Data received from NodeMCU:", dataFromNodeMCU);
-  res.json({ message: "Data received successfully!" });
+  res.json(dataFromNodeMCU);
 };
 
 const getAllEntries = errorMiddleware(getAllEntriesHandler);

@@ -1,133 +1,70 @@
 const SensorData = require("../models/sensorDataModel");
+const errorMiddleware = require("../middlwares/errorMiddleware");
+const winston = require("winston");
 
-const getAllEntries = async (req, res) => {
-  try {
-    const entries = await SensorData.find();
-    res.json(entries);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
+// Configure Winston logger
+const logger = winston.createLogger({
+  transports: [new winston.transports.Console()],
+});
+
+const getAllEntriesHandler = async (req, res) => {
+  const entries = await SensorData.find();
+  res.json(entries);
 };
 
-const getEntriesByPHValue = async (req, res) => {
-  try {
-    const entries = await SensorData.find(
-      {},
-      { _id: 0, entry_id: 1, pH_value: 1 }
-    );
-    res.json(entries);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
+const getEntriesByValueHandler = (valueField) => async (req, res) => {
+  const entries = await SensorData.find(
+    {},
+    { _id: 0, entry_id: 1, [valueField]: 1 }
+  );
+  res.json(entries);
 };
 
-const getEntriesByTDSValue = async (req, res) => {
-  try {
-    const entries = await SensorData.find(
-      {},
-      { _id: 0, entry_id: 1, tds_value: 1 }
-    );
-    res.json(entries);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
+const getLastEntryOfValueHandler = (valueField) => async (req, res) => {
+  const entry = await SensorData.findOne(
+    {},
+    { _id: 0, entry_id: 1, [valueField]: 1 }
+  ).sort({ createdAt: -1 });
+  res.json(entry);
 };
 
-const getEntriesByTurbidityValue = async (req, res) => {
-  try {
-    const entries = await SensorData.find(
-      {},
-      { _id: 0, entry_id: 1, turbidity_value: 1 }
-    );
-    res.json(entries);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
+const storeSensorDataHandler = async (req, res) => {
+  const dataFromNodeMCU = req.body;
+  logger.info("Data received from NodeMCU:", dataFromNodeMCU);
 };
 
-const getEntriesByPM25Value = async (req, res) => {
-  try {
-    const entries = await SensorData.find(
-      {},
-      { _id: 0, entry_id: 1, pm25_value: 1 }
-    );
-    res.json(entries);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-const getEntriesByMQ135Value = async (req, res) => {
-  try {
-    const entries = await SensorData.find(
-      {},
-      { _id: 0, entry_id: 1, mq135_value: 1 }
-    );
-    res.json(entries);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-const getLastEntryOfPHValue = async (req, res) => {
-  try {
-    const entry = await SensorData.findOne(
-      {},
-      { _id: 0, entry_id: 1, pH_value: 1 }
-    ).sort({ createdAt: -1 });
-    res.json(entry);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-const getLastEntryOfTDSValue = async (req, res) => {
-  try {
-    const entry = await SensorData.findOne(
-      {},
-      { _id: 0, entry_id: 1, tds_value: 1 }
-    ).sort({ createdAt: -1 });
-    res.json(entry);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-const getLastEntryOfTurbidityValue = async (req, res) => {
-  try {
-    const entry = await SensorData.findOne(
-      {},
-      { _id: 0, entry_id: 1, turbidity_value: 1 }
-    ).sort({ createdAt: -1 });
-    res.json(entry);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-const getLastEntryOfPM25Value = async (req, res) => {
-  try {
-    const entry = await SensorData.findOne(
-      {},
-      { _id: 0, entry_id: 1, pm25_value: 1 }
-    ).sort({ createdAt: -1 });
-    res.json(entry);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-const getLastEntryOfMQ135Value = async (req, res) => {
-  try {
-    const entry = await SensorData.findOne(
-      {},
-      { _id: 0, entry_id: 1, mq135_value: 1 }
-    ).sort({ createdAt: -1 });
-    res.json(entry);
-  } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
+const getAllEntries = errorMiddleware(getAllEntriesHandler);
+const getEntriesByPHValue = errorMiddleware(
+  getEntriesByValueHandler("pH_value")
+);
+const getEntriesByTDSValue = errorMiddleware(
+  getEntriesByValueHandler("tds_value")
+);
+const getEntriesByTurbidityValue = errorMiddleware(
+  getEntriesByValueHandler("turbidity_value")
+);
+const getEntriesByPM25Value = errorMiddleware(
+  getEntriesByValueHandler("pm25_value")
+);
+const getEntriesByMQ135Value = errorMiddleware(
+  getEntriesByValueHandler("mq135_value")
+);
+const getLastEntryOfPHValue = errorMiddleware(
+  getLastEntryOfValueHandler("pH_value")
+);
+const getLastEntryOfTDSValue = errorMiddleware(
+  getLastEntryOfValueHandler("tds_value")
+);
+const getLastEntryOfTurbidityValue = errorMiddleware(
+  getLastEntryOfValueHandler("turbidity_value")
+);
+const getLastEntryOfPM25Value = errorMiddleware(
+  getLastEntryOfValueHandler("pm25_value")
+);
+const getLastEntryOfMQ135Value = errorMiddleware(
+  getLastEntryOfValueHandler("mq135_value")
+);
+const storeSensorData = errorMiddleware(storeSensorDataHandler);
 
 module.exports = {
   getAllEntries,
@@ -141,4 +78,5 @@ module.exports = {
   getLastEntryOfTurbidityValue,
   getLastEntryOfPM25Value,
   getLastEntryOfMQ135Value,
+  storeSensorData,
 };

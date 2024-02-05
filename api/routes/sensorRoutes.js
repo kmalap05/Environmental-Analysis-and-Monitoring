@@ -33,4 +33,5 @@ router.get(
   sensorDataController.getLastEntryOfMQ135Value
 );
 
+router.post("/nodemcu-data", sensorDataController.storeSensorData);
 module.exports = router;

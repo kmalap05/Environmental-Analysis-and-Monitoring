@@ -54,8 +54,8 @@ async function collectAndSaveData() {
   }
 }
 
-setInterval(() => {
-  collectAndSaveData();
-}, interval);
+// setInterval(() => {
+//   collectAndSaveData();
+// }, interval);
 
 module.exports = collectAndSaveData;

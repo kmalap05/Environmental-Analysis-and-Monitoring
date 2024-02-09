@@ -2,8 +2,8 @@ const SensorData = require("../models/sensorDataModel");
 const axios = require("axios");
 
 const channelID = 2279831;
-const fieldIDs = [1, 2, 3, 4, 5];
 const interval = 15000;
+let previousApiEntryID = null;
 
 async function getLatestEntryId() {
   const latestEntry = await SensorData.findOne(
@@ -17,45 +17,33 @@ async function collectAndSaveData() {
   try {
     const responses = await Promise.all([
       axios.get(
-        `https://api.thingspeak.com/channels/${channelID}/fields/1/last.json`
-      ),
-      axios.get(
-        `https://api.thingspeak.com/channels/${channelID}/fields/2/last.json`
-      ),
-      axios.get(
-        `https://api.thingspeak.com/channels/${channelID}/fields/3/last.json`
-      ),
-      // axios.get(
-      //   `https://api.thingspeak.com/channels/${channelID}/fields/${fieldIDs[3]}/last.json`
-      // ),
-      axios.get(
-        `https://api.thingspeak.com/channels/${channelID}/fields/5/last.json`
+        `https://api.thingspeak.com/channels/${channelID}/feeds/last.json`
       ),
     ]);
 
-    console.log(responses[0].data);
-    console.log(responses[1].data);
-    console.log(responses[2].data);
-    console.log(responses[3].data);
+    let currentApiEntryID = responses[0].entry_id;
 
-    const entry_id = await getLatestEntryId();
-    const data = {
-      entry_id,
-      pH_value: parseFloat(responses[0].data.field1),
-      tds_value: parseFloat(responses[1].data.field2),
-      turbidity_value: parseFloat(responses[2].data.field3),
-      // pm25_value: parseFloat(responses[3].data.field4),
-      mq135_value: parseFloat(responses[3].data.field5),
-    };
+    if (currentApiEntryID !== previousApiEntryID) {
+      const entry_id = await getLatestEntryId();
+      const data = {
+        entry_id,
+        pH_value: parseFloat(responses[0].data.field1),
+        tds_value: parseFloat(responses[0].data.field2),
+        turbidity_value: parseFloat(responses[0].data.field3),
+        pm25_value: parseFloat(responses[0].data.field4),
+        mq135_value: parseFloat(responses[0].data.field5),
+      };
 
-    await SensorData.create(data);
+      await SensorData.create(data);
+      previousApiEntryID = currentApiEntryID;
+    }
   } catch (error) {
     console.error(error);
   }
 }
 
-// setInterval(() => {
-//   collectAndSaveData();
-// }, interval);
+setInterval(() => {
+  collectAndSaveData();
+}, interval);
 
 module.exports = collectAndSaveData;
